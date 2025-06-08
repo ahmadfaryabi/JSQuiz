@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="no" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Verdens beste quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+  <div class="divTimeHeader" id="showTimer">
+  </div>
+
+
+  <div class="boks_">
+    <div class="boks_content" id="test_test">
+    <b style="font-size:40px">Velkommen til Quiz</b>
+    <p>Denne quizen er for vanskelig.</p>
+    <p>Du vil få spørsmål fra ulike emner, noen virker veldig vanskelig og det er noen lurespørsmål. Pass på!</p>
+    <p>Det er ingen som har klart å få helt rett på første forsøk!</p>
+    <h3>Regler under prøven (<a onclick="showRules()" class="a_link">vis/skjul reglene</a>)</h3>
+    <div style="display:none" id="rules">
+      <p>Dere får 10 minutter of 30 sekunder på dere å gjennomføre hele prøven. Etter 2 minutter og 30 sekunder leveres svarene automatisk og resultatet vises med en gang</p>
+      <p>Ingen hjelpemidler tillatt. Fanges du med hjelpemidler avlusttes prøven og må vente 1 dag på ny prøve</p>
+      <p>Etter prøven blir resultatet vist og karakter samt de spørsmålene som ble svart feil og hvilket svar som er riktig</p>
+    </div>
+      <p>Lykke til og håper det beste!</p>
+    <button type="button" class="btn" onclick="startQuiz(), quiz(0), startTimer()">Start quiz</button>
+   </div>
+  </div>
+  <p style="margin:70px"></p>
+  <p></p>
+</body>
+<script>
+  class Quiz {
+    constructor(a, b, c, d, e, f) {
+      this.sporsmaal = a;
+      this.alternativer = b;
+      this.bildeAlternativer = c
+      this.riktigSvar = d;
+      this.poeng = e;
+      this.bilde = f;
+    }
+  }
+  let testOrder = [];
+  let test = [
+    new Quiz("Omtrent hvor langt er avstanden mellom Oslo-Hamburg med bil (uten båt)?", ["ca. 1200 km", "ca. 900 km", "ca. 1000 km", "ca.1500 km"], ["", "", "", "", ""], 2,6, ""),
+    new Quiz("Hva er algoritme?", ["En presis beskrivelse av serie operasjoner som løser et eller flere problemer", "En metode å strukturere data på", "En presis beskrivelse av å samle data og bruke dem effektivt"], ["", "", "", ""], 0, 8, ""),
+    new Quiz("Gitt disse tallene 2,3,5,7,11,13,17,19,23,... Hva vet du om dem?", ["De er ikke delelig med noe", "De er delelig med seg selv og 1", "De er delelige med andre tall enn 1 og seg selv", "De er ikke delelig med noe tall"], ["", "", "", ""], 1, 4, ""),
+    new Quiz("Hvor mange stasjoner har Oslos t-banenett?", ["96", "105", "101", "94"], ["", "", "", ""], 2, 4, ""),
+    new Quiz("Hvor mange t-banelinjer har Prahas t-banenett?", ["4", "6", "3", "5"], ["", "", "", ""], 2, 6, ""),
+    new Quiz("Hvor mange stasjoner har linje 5 i Oslos t-banenett?", ["30", "33", "34", "40"], ["", "", "", ""], 1, 4, ""),
+    new Quiz("Hvor mange bokstaver har det lengste ordet på norsk? Hint: Ordet må gi mening", ["60", "55", "45", "36"], ["", "", "", ""], 0, 8, ""),
+    new Quiz("Hvis du summerer alle tall fra 1 til 100, hva blir summen?", ["500", "5025", "5050", "5000"], ["", "", "", ""], 2, 4, ""),
+    new Quiz("Se på den samme summen 1-100. Hvilken type rekke er det?", ["Aritmetisk rekke", "Geometrisk rekke", "Ingen rekke"], ["", "", "", ""], 0, 2, ""),
+    new Quiz("Hva er 'Provisorisk'", ["Midlertidig", "Gjentakende", "Noe mistenkelig"], ["", "", "", ""], 0, 6, ""),
+    new Quiz("Hva er 'Diametralt'?", ["Stabil", "På lik linje", "Motsatt", "Kortfattet"], ["", "", "", ""], 2, 6, ""),
+    new Quiz("Hva er 'Lapidarisk'?", ["Tydelig", "Kortfattet", "Meningsfylt", "Aktiv"], ["", "", "", ""], 1, 6, ""),
+    new Quiz("Hva er hovedstaden i Peru?", ["Cali", "Buenos Aires", "La Paz", "Lima"], ["", "", "", ""], 3, 6, ""),
+    new Quiz("Hva kalles akselerasjonen i en sirkelbevegelse?", ["Sirkelakselerasjon", "Sentripetalakselerasjon", "Radiusakselerasjon", "Vektorakselerasjon"], ["", "", "", ""], 1, 4, ""),
+    new Quiz("Jeg er en operasjon som hjelper deg til å finne masse kule ting om funksjoner og det er om dens stigningstall til et gitt punkt. Gjett meg, eller ikke!", ["Integrasjon", "Differensialligninger", "Derivasjon", "Funksjonsdrøfting"], ["", "", "", ""], 2, 2, ""),
+    new Quiz("Hva er den største byen i Kina? (befolkning)", ["Beijing", "Shanghai", "Shenzhen", "Guangzhou"], ["", "", "", ""], 1, 4, ""),
+    new Quiz("hva heter den største stjernen funnet så langt?", ["Sirius", "Betelgeuse", "VY Canis Majoris", "Rigel"], ["", "", "", ""], 2, 6, "")
+  ];
+
+  let minutt = 0;
+  let sekund = 0;
+  let pauseTimer = false;
+  let boolean = 0;
+  let dineSvar = [];
+  let riktigeSvar = [];
+  let galeSvar = [];
+  let str = "";
+  let feilMeldinger = 0;
+  let poeng = 0;
+  let totalPoeng = 0;
+  let grades = [
+    [0.0, 0.4, "F"],
+    [0.4, 0.5, "E"],
+    [0.5, 0.6, "D"],
+    [0.6, 0.75, "C"],
+    [0.75, 0.90, "B"],
+    [0.90, 1.10, "A"]
+  ]
+
+  let grades_comment = [
+    [0.0, 0.4, "Karakter F!?"],
+    [0.4, 0.5, "Du består, men kan du forbedre den?"],
+    [0.5, 0.6, "Du har nådd middels. Prøv igjen og øk!"],
+    [0.6, 0.75, "Du er flink. Bra! Klarer du høy måloppnåelse?"],
+    [0.75, 0.90, "Du viser mye av det du kan! Vis alt du kan!"],
+    [0.90, 1.00, "Herlig, du fikk A. Du er flink"],
+    [1.00, 1.10, "Du er en legende! Smartere enn Einstein! Kan jeg få autografen din. Du er rett og slett altfor flink til å ta denne quizen"]
+  ]
+
+
+  for (var i = 0; i < test.length; i++) {
+    totalPoeng += test[i].poeng;
+  }
+
+  function startTimer() {
+    pauseTimer = false;
+    document.getElementById("showTimer").style.color = "black";
+    document.getElementById("showTimer").style.display = "block";
+    minutt = 10;
+    sekund = 30;
+    document.getElementById("showTimer").innerHTML = "Du har igjen";
+    if(minutt > -1 && sekund > -1) {
+      let intervall = setInterval(function (){
+        if(!pauseTimer) {
+          if(sekund < 0) {
+            sekund = 59;
+            minutt--;
+          }
+
+          if(sekund < 10) {
+            sekund = "0" +sekund;
+          }
+
+          if(minutt == 0 && sekund < 10) {
+            document.getElementById("showTimer").style.color = "red";
+          }
+
+          if(minutt > -1 && sekund > -1) {
+            document.getElementById("showTimer").innerHTML = "Tid igjen: " + minutt + ":" + sekund;
+          } else {
+            document.getElementById("showTimer").innerHTML = "Tiden er ute";
+            pauseTimer = true;
+            resultat();
+          }
+        sekund--;
+        }
+      }, 1000);
+    }
+  }
+
+
+  function showRules() {
+    $("#rules").toggle()
+  }
+
+  function startQuiz() {
+    testOrder = [];
+    for (var i = 0; i < test.length; i++) {
+      let rT = Math.floor(Math.random()*test.length);
+      if(testOrder.includes(rT)) {
+        i--;
+      } else {
+        testOrder.push(rT);
+      }
+    }
+  }
+
+  function quiz(indeks) {
+    let spNr = indeks + 1;
+    let spPercent = spNr/test.length * 100;
+    str = "<div class='oppgave_tekst_class'><b>Oppgave " + spNr + "</b> (" + test[testOrder[indeks]].poeng + " poeng)</div>";
+    str += "<div class='sporsmaal_oppgave'>" + test[testOrder[indeks]].sporsmaal + "</div>";
+    if (test[testOrder[indeks]].bilde != "") {
+      str += "<p><img src='" + test[testOrder[indeks]].bilde + "' width='150px'></p>";
+    }
+    str += "<div id='feilMelding'></div>"
+    for (var i = 0; i < test[testOrder[indeks]].alternativer.length; i++) {
+      str += "<div id='"+i+"' class='answerBox' onclick='velgAlt(" + indeks + ", " + i + ")'>";
+      str += test[testOrder[indeks]].alternativer[i];
+      if (test[testOrder[indeks]].bildeAlternativer[i] != "") {
+        str += "<img src='" + test[testOrder[indeks]].bildeAlternativer[i] + "' height='50px'>"
+      }
+      str += "</div>";
+    }
+    str += "";
+    if (indeks == 0) {
+      str += "<div class='flex'>";
+      str += "<div style='width:20%; text-align:left;padding:10px'>"
+      str += "</div>"
+      str += "<div style='width:45%; text-align:center;padding:10px;text-align:center'>"
+      str += ""+spNr+" av "+test.length+"";
+      str += "</div>"
+      str += "<div style='width:20%; text-align:right;padding:10px'>"
+      str += "<button class='btn' onclick='nesteSp(" + indeks + ")'>Neste spørsmål</button>";
+      str += "</div>"
+      str += "</div>"
+    } else if (indeks > 0 && indeks < test.length - 1) {
+      str += "<div class='flex'>";
+      str += "<div style='width:20%; text-align:left;padding:10px'>"
+      str += "<button class='btn' onclick='forrigeSp(" + indeks + ")'>Forrige spørsmål</button>";
+      str += "</div>"
+      str += "<div style='width:45%; text-align:center;padding:10px;text-align:center'>"
+      str += ""+spNr+" av "+test.length+"";
+      str += "</div>"
+      str += "<div style='width:20%; text-align:right;padding:10px'>"
+      str += "<button class='btn' onclick='nesteSp(" + indeks + ")'>Neste spørsmål</button>";
+      str += "</div>"
+      str += "</div>"
+    } else if (indeks == test.length - 1) {
+      str += "<div class='flex'>";
+      str += "<div style='width:20%; text-align:left;padding:10px'>"
+      str += "<button class='btn' onclick='forrigeSp(" + indeks + ")'>Forrige spørsmål</button>";
+      str += "</div>"
+      str += "<div style='width:45%; text-align:center;padding:10px;text-align:center'>"
+      str += ""+spNr+" av "+test.length+"";
+      str += "</div>"
+      str += "<div style='width:20%; text-align:right;padding:10px'>"
+      str += "<button class='btn' onclick='bekreft()'>Fullfør quiz</button>";
+      str += "</div>"
+      str += "</div>"
+    }
+    str += "<p><a href='#' class='a_link' onclick='velgSpm()'>Velg en annen spørsmål.</a></p>";
+    document.getElementById("test_test").innerHTML = str;
+  }
+
+  function velgAlt(indeks, i) {
+    dineSvar[indeks] = i;
+    for (var j = 0; j < test[testOrder[indeks]].alternativer.length; j++) {
+      if(dineSvar[indeks] == j) {
+        document.getElementById(j).style.background = "#3d8adb";
+        document.getElementById(j).style.color = "#fff";
+      } else {
+        document.getElementById(j).style.background = "#fff";
+        document.getElementById(j).style.color = "#000";
+      }
+    }
+  }
+
+function oppdaterSpm(indeks) {
+  for (var i = 0; i < test[indeks].alternativer.length; i++) {
+    if(dineSvar[indeks] == i) {
+      document.getElementById(i).style.background = "#3d8adb";
+      document.getElementById(i).style.color = "#fff";
+    }
+  }
+}
+
+  function bekreft() {
+    let r_tall = Math.floor(Math.random()*5)+1
+    let lol = test.length - 1;
+    str = "<h1>Er du sikker på at du vil avslutte quizen?</h1>"
+    switch (r_tall) {
+      case 1:
+        str += "<p>Quizen er over? Hvorfor ikke ta en titt og sjekke igjen?</p>";
+        break;
+      case 2:
+        str += "<p>Lykke til, håper du er blant de beste på denne quizen!</p>"
+        break;
+      case 3:
+        str += "<p>Neimen, nå er du ferdig med denne quizen! Vil du avslutte eller ta en titt og levere? Det er ditt valg. </p>"
+        break;
+      case 4:
+        str += "<p>Klar, ferdig, lever! Resultatet venter!</p>";
+        break;
+      case 5:
+        str += "<p>Denne teksten er irrelevant, bare lever, ikke se på meg, men jeg har en forespørsel: ta en titt igjen og lever deretter!</p>"
+      default:
+        break;
+    }
+    str += "<p><button class='btn_no' onclick='quiz(" + lol + ")'>Fortsett quizen</button> <button class='btn' onclick='resultat()'>Lever quiz og vis resultat</button></p>";
+    document.getElementById("test_test").innerHTML = str;
+  }
+
+
+  function resultat() {
+    pauseTimer = true;
+    document.getElementById("showTimer").style.display = "none";
+    boolean = 1;
+    for (var i = 0; i < test.length; i++) {
+      if (dineSvar[i] == test[testOrder[i]].riktigSvar) {
+        riktigeSvar.push(test[testOrder[i]]);
+        poeng += test[testOrder[i]].poeng;
+      } else {
+        galeSvar.push(test[testOrder[i]]);
+      }
+    }
+
+
+    str = "<b style='font-size:30px'>Din resultat fra quizen</b>";
+    for (var i = 0; i < grades.length; i++) {
+      if (poeng / totalPoeng >= grades[i][0] && poeng / totalPoeng < grades[i][1]) {
+        str += "<div class='percent_'><h1 style='font-weight:bolder'>" + ((poeng / totalPoeng) * 100).toFixed(0) + "% - "+poeng+"/"+totalPoeng+" poeng</h1></div>"
+        str += "<span class='grade_style'>" + grades[i][2] + "</span>"
+      }
+    }
+
+    for (var j = 0; j < grades_comment.length; j++) {
+      if(poeng / totalPoeng >= grades_comment[j][0] && poeng / totalPoeng < grades_comment[j][1]) {
+        str += "<div style='border-bottom:2px solid #000'><p><b>Kommentar:</b></p>";
+        str += "<p>"+grades_comment[j][2]+"</p></div>"
+      }
+    }
+    str += "<p>Antall oppgaver som du har besvart riktig på: <br>" + riktigeSvar.length + " oppgave(r)</p>"
+    if (galeSvar.length > 0) {
+      str += "Antall oppgaver som du har besvart feil på:  " + galeSvar.length + " oppgave(r).";
+      str += "<p> <a class='link' href='#' onclick='showWrongAnswers()'>Vis feilene dine</a> </p>"
+    }
+    if (galeSvar.length > 0) {
+      str += "<div>";
+      str += "<h2>Feil på quizen</h2>";
+      for (var j = 0; j < test.length; j++) {
+        if (dineSvar[j] != test[testOrder[j]].riktigSvar) {
+          str += "<div class='feil_besvarelse_quiz'>"
+          str += "<h2>" + test[testOrder[j]].sporsmaal + "</h2>";
+          for (var k = 0; k < test[testOrder[j]].alternativer.length; k++) {
+              if(k == test[testOrder[j]].riktigSvar) {
+                str += "<div class='divRight'><i style='color:#51b555' class='fa fa-check-circle'></i> "+test[testOrder[j]].alternativer[k]+"</div>";
+              } else {
+                str += "<div class='divWrong'><i style='color:red' class='fa fa-times-circle'></i> "+test[testOrder[j]].alternativer[k]+"</div>";
+              }
+          }
+          if(test[testOrder[j]].alternativer[dineSvar[j]] == undefined) {
+            str += "<p><i style='color:red' class='fa fa-times-circle'></i> Ditt svar: blankt</p>";
+          } else {
+            str += "<p><i style='color:red' class='fa fa-times-circle'></i>Ditt svar: " + test[testOrder[j]].alternativer[dineSvar[j]] + "</p>";
+          }
+          str += "<p>Du mistet "+test[testOrder[j]].poeng+" poeng på denne oppgaven.</p>"
+          str += "</div>"
+        }
+      }
+      str += "</div>";
+    }
+    str += "<button class='btn' onclick='restart()'>Start på nytt!</button>";
+    document.getElementById("test_test").innerHTML = str;
+  }
+
+  function velgSpm() {
+    str = "<h1>Velg en annen spørsmål!</h1>";
+    str += "<table class='table_questions'>";
+    str += "<tr><th>Spørsmål</th><th>Status</th><th>Poeng</th></tr>";
+    for (var i = 0; i < testOrder.length; i++) {
+      str += "<tr onclick='quiz("+i+")'>";
+      str += "<td>"+ test[testOrder[i]].sporsmaal + "</b></td>";
+      str += "<td></td>";
+      str += "<td>"+test[testOrder[i]].poeng+" poeng</td";
+      str += "</tr>";
+    }
+    str += "</table>"
+    document.getElementById("test_test").innerHTML = str;
+  }
+
+  function nesteSp(indeks) {
+    quiz(indeks + 1);
+    oppdaterSpm(indeks + 1);
+  }
+
+  function nesteSp_feil(indeks) {
+    visFeil(indeks + 1);
+  }
+
+  function forrigeSp(indeks) {
+    quiz(indeks - 1);
+    oppdaterSpm(indeks - 1);
+  }
+
+  function restart() {
+    startTimer();
+    startQuiz();
+    dineSvar = [];
+    riktigeSvar = [];
+    galeSvar = [];
+    feilMeldinger = 0;
+    poeng = 0;
+    quiz(0);
+  }
+
+  function showWrongAnswers() {
+    $("#wrongAnswer").toggle(500);
+  }
+</script>
+
+</html>

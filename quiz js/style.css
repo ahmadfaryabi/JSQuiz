@@ -1,0 +1,230 @@
+body {
+  margin: 0;
+  font-family: Helvetica;
+  background-color: lightgrey;
+}
+
+.divTimeHeader {
+  position: fixed;
+  background-color: #fff;
+  padding:10px;
+  font-size: 18px;
+  top:0;
+  display: none;
+  box-shadow: 0 2px 2px #000;
+  width: 100%;
+}
+
+.under_menu {
+  position: fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  width: 100%;
+  display: flex;
+  background-color: #fff;
+  flex-direction: row;
+  box-shadow: 0px 0px 2px 0px #000;
+}
+
+
+.boks_content {
+  margin:auto;
+  margin-top:60px;
+  max-width: 800px;
+  background: white;
+  border-radius: 10px;
+  padding: 20px 20px;
+  color: #353131;
+}
+
+.flex {
+  display: flex;
+  border-radius: 4px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: #1e4166;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #12283f;
+}
+
+.group_box {
+  width: 30%;
+  padding:10px;
+  margin:5px;
+}
+
+.alternativ {
+  padding: 15px 10px;
+  margin: 10px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.message {
+  background-color: #c7d9f0;
+  color: #1f61b5;
+  border: 1px solid #1f61b5;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px;
+}
+
+#feilMelding {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #e00013;
+  background-color: #ffe8ea;
+  color: #e00013;
+  display: none;
+  margin: 10px;
+}
+
+.btn_no {
+  background-color: #c74242;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+}
+
+.spM_div {
+  width: 150px;
+  padding: 10px;
+  cursor: pointer;
+  margin: 10px;
+  height: 220px;
+  box-shadow: 0px 2px 2px 0px #000;
+  background-color: #fff;
+}
+
+.spM_div:hover {
+  background: #fff4d6;
+}
+
+.feil_besvarelse_quiz {
+  padding: 10px 20px;
+  margin: 20px;
+  border-left: 10px solid red;
+  border-radius: 10px;
+  box-shadow: 0px 2px 2px 0px #000;
+}
+
+.grade_style {
+  display: inline-block;
+  color: #084085;
+  background-color: #ecf8ff;
+  border: 1px solid #cfe7ff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 1.50em;
+  font-weight: bold;
+  min-width: 40px;
+}
+
+.percent_ {
+  font-weight: 100;
+  border-left:5px solid #81b88c;
+  padding-left:10px;
+}
+
+
+.oppgave_tekst_class {
+  font-size: 25px;
+  margin-bottom:15px;
+}
+
+.sporsmaal_oppgave {
+  padding:5px 10px;
+  border-left: 5px solid #4d5eff;
+  font-size: 20px;
+}
+
+.a_link {
+  color:#7a91eb;
+  text-decoration: none;
+}
+
+.answerBox {
+  border: 1px solid #b8b8b8;
+  padding: 10px 15px;
+  cursor: pointer;
+  width:50%;
+  border-radius: 5px;
+  margin: 15px 10px;
+  font-size: 20px;
+}
+
+.a_link:hover {
+    color:#273e96;
+    text-decoration: underline;
+}
+
+.process_bar {
+  border: 2px solid rgb(17, 52, 142);
+  border-radius: 4px;
+  text-align: left;
+  font-size: 20px;
+}
+
+.span_progress {
+  background-color: #d5e4f8;
+  height: 25px;
+}
+
+.wrongAnswer {
+  display: none;
+}
+
+.divWrong {
+  box-sizing: border-box;
+  box-shadow: 0 2px 2px 0px #000;
+  padding:10px 5px;
+  margin:5px;
+  border-left:3px solid red;
+  border-radius: 4px;
+}
+.divRight {
+  box-sizing: border-box;
+  box-shadow: 0 2px 2px 0px #000;
+  padding:10px 5px;
+  margin:5px;
+  border-left:3px solid #51b555;
+  border-radius: 4px;
+}
+
+
+
+.table_questions th {
+  text-align: left;
+  padding: 12px 30px;
+  font-weight: 500;
+  background-color: #544545;
+  color: white;
+}
+
+.table_questions td {
+  text-align: left;
+  padding: 12px 30px;
+  border-bottom: 1px solid #a4a4a4;
+  cursor: pointer;
+}
+
+.table_questions td:hover {
+  background-color: #cffffe;
+}
+
+.table_questions{
+  border-collapse: collapse;
+}
